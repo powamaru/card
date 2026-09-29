@@ -10,9 +10,17 @@
       margin: 0;
       background: linear-gradient(180deg, #7FD6EF 0%, #e8f8ff 100%);
     }
-    model-viewer {
-      width: 100vw;
-      height: 100vh;
+<model-viewer
+  src="card.glb"
+  alt="ぽわまるトレーディングカード"
+  auto-rotate
+  auto-rotate-delay="0"
+  rotation-per-second="60deg"
+  camera-controls
+  disable-zoom
+  shadow-intensity="1"
+  orientation="90deg 0deg 0deg">
+</model-viewer>
     }
   </style>
 </head>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ぽわまる トレーディングカード｜ぽわまるぐみ</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; }
+    body { background: linear-gradient(180deg, #7FD6EF 0%, #e8f8ff 100%); }
+
+    .stage { position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100%; }
+    /* カードが跳ねる(着地でちょっとつぶれる) */
+    .hopper {
+      position: absolute; left: 0; right: 0; top: 6vh; bottom: 16vh;
+      transform-origin: 50% 100%;
+      animation: hop 1.5s infinite;
+    }
+    model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+    @keyframes hop {
+      0%   { transform: translateY(0)     scale(1.06, .92); animation-timing-function: cubic-bezier(.2,.7,.3,1); }
+      12%  { transform: translateY(0)     scale(.96, 1.05); animation-timing-function: cubic-bezier(.2,.7,.3,1); }
+      50%  { transform: translateY(-9vh)  scale(1, 1);      animation-timing-function: cubic-bezier(.7,0,.8,.3); }
+      88%  { transform: translateY(0)     scale(1, 1); }
+      100% { transform: translateY(0)     scale(1.06, .92); }
+    }
+    /* 地面のかげ(高く跳ぶほど小さく・うすく) */
+    .shadow {
+      position: absolute; left: 50%; bottom: 11vh; width: 46vmin; height: 5vmin; margin-left: -23vmin;
+      border-radius: 50%; background: rgba(0,0,0,.18); filter: blur(6px);
+      animation: sh 1.5s infinite;
+    }
+    @keyframes sh {
+      0%,100% { transform: scale(1);   opacity: 1; }
+      50%     { transform: scale(.6);  opacity: .45; }
+    }
+    @media (prefers-reduced-motion: reduce) { .hopper, .shadow { animation: none; } }
+
+    /* 3Dが表示できない端末では、かわりにカードの画像を出す */
+    #fb { display: none; position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 6;
+          align-items: center; justify-content: center; flex-direction: column; text-align: center; }
+    #fb img { max-width: 78vw; max-height: 74vh; border-radius: 4vmin; box-shadow: 0 6px 6px rgba(0,0,0,.12); }
+    #fb p { margin: 14px 16px 0; font-size: 14px; color: #6B4A2F; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="shadow"></div>
+    <div class="hopper">
+      <model-viewer id="mv"
+        src="card.glb"
+        alt="ぽわまる トレーディングカード"
+        auto-rotate
+        auto-rotate-delay="0"
+        rotation-per-second="45deg"
+        camera-controls
+        disable-zoom
+        interaction-prompt="none"
+        camera-orbit="0deg 90deg auto"
+        field-of-view="30deg"
+        exposure="1.15"
+        shadow-intensity="0">
+      </model-viewer>
+    </div>
+  </div>
+
+  <div id="fb"><img src="front_powamaru.jpg" alt="カードの画像"><p>この端末では3D表示ができないため、画像を表示しています</p></div>
+  <script>
+    // 3Dが読みこめなかったとき(古い端末など)だけ、代わりの画像を出す
+    (function () {
+      var mv = document.getElementById('mv'), fb = document.getElementById('fb');
+      function show() { if (fb) fb.style.display = 'flex'; }
+      function hide() { if (fb) fb.style.display = 'none'; }
+      if (mv) { mv.addEventListener('load', hide); mv.addEventListener('error', show); }
+      setTimeout(function () { if (!(mv && mv.loaded)) show(); }, 7000);
+    })();
+  </script>
+</body>
+</html>
